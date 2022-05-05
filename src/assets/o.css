@@ -1,0 +1,46 @@
+.header-button{
+    background-color: #222529;
+    border-radius: 6px;
+    padding: 10px;
+    line-height: 20px;
+    height: 20px;
+    font-size: 16px;
+}
+
+.header-button:hover{
+    opacity: 0.5;
+}
+
+.app-body{
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 0;
+}
+
+.card{
+    background-color: #000;
+    color: #FFF;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 15px 0px;
+}
+
+.card-fund-token{
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-button{
+    background-color: #222529;
+    border-radius: 6px;
+    padding: 10px;
+    line-height: 20px;
+    height: 20px;
+    font-size: 16px;
+    position: relative;
+    cursor: pointer;
+}
+
+.card-button:hover{
+    opacity: 0.5;
+}
