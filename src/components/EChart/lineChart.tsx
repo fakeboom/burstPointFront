@@ -71,7 +71,7 @@ function LeftTwo({index}:{index : number}){
         ],
         series: [
             {
-                name: 'token0',
+                name: 'tokenNetValue',
                 type: 'line',
                 data: data0,
                 itemStyle: {
@@ -96,7 +96,7 @@ function LeftTwo({index}:{index : number}){
                 areaStyle: {}
             },
             {
-                name: 'token1',
+                name: 'tokenLossValue',
                 type: 'line',
                 data: data1,
                 itemStyle: {
