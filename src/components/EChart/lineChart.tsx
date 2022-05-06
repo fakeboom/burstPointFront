@@ -5,7 +5,7 @@ import { useFundStatus, FundStatus } from 'data/History'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 
 function LeftTwo({index}:{index : number}){
-    const statusList = useFundStatus(index)
+    const [statusList, _] = useFundStatus(index)
     const [xAxisData, data0, data1] = useMemo(
         ()=>{
             let xAxisData = []
@@ -34,7 +34,8 @@ function LeftTwo({index}:{index : number}){
             inactiveColor: 'rgba(255, 255, 255, 0.5)',
             textStyle:{
                 color: '#FFF',
-            }
+            },
+
         },
         grid: {
             left: '1%',

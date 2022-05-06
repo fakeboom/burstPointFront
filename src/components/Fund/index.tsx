@@ -15,6 +15,7 @@ import { Input as NumericalInput } from '../NumericalInput'
 import { useFundRedeemCallback, useFundSubscribeCallback} from 'hooks/useFundCallback'
 import { HistoryCard } from './HistoryCard'
 import LeftTwo from 'components/EChart/lineChart'
+import { useFundStatus, FundStatus } from 'data/History'
 
 const CardUnit = styled.div`
     display: flex;
@@ -194,6 +195,9 @@ export function FundTokenCard({token}:{token : Token }){
         [token0, token1, staticsInfos]
     )
 
+    const [_  , apy ] = useFundStatus(tokenIndex)
+    const ApyShow = fixFloat(parseFloat(apy) * 100, 3) + '%'
+
     const shareTokenCon = useTokenContract( shareTokenAddress , false)
     const shareTokenBalance = tokenAmountForshow(useSingleCallResult(shareTokenCon, "balanceOf", [account??'']).result??'0', token.decimals)
 
@@ -267,7 +271,7 @@ export function FundTokenCard({token}:{token : Token }){
                         <CardText style={{verticalAlign:"middle"}}>&nbsp;&nbsp;{token.symbol}</CardText>
                     </div>
                     <CardUnit>
-                        <CardText>123123</CardText>
+                        <CardText>{ApyShow}</CardText>
                         <CardText1>APY</CardText1>
                     </CardUnit>
                     <CardUnit>

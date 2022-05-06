@@ -57,15 +57,19 @@ export function useFundHistory(index:number) : any{
     return [reList, inSum, outSum]
 }
 
-export function useFundStatus(index : number) : FundStatus[]{
+export function useFundStatus(index : number) : [FundStatus[], string]{
   let netValueKey = index == 0 ? 'token0NetValue' : 'token1NetValue'
   let lossValueKey = index == 0 ? 'token0LossValue' : 'token1LossValue'
+  let apyKey = index == 0 ? 'totalToken0NetApy' : 'totalToken1NetApy'
   const [status , setStatus] = useState([])
+  const [apy , setApy] = useState<string>('0')
   useEffect(()=>{
     const timer = setInterval(async ()=>{
-        const {data} = await(await fetch(APIHost + "/yuzufund/fundstatus")).json();
-        const dataRev = (data as any[]).reverse()
+        const data = await(await fetch(APIHost + "/yuzufund/fundstatus")).json();
+        const dataRev = (data.data as any[]).reverse()
         setStatus(dataRev as never[])
+        setApy(data[apyKey])
+        console.log(apyKey, data[apyKey] )
 
     },3000)
     return () =>{
@@ -92,7 +96,7 @@ export function useFundStatus(index : number) : FundStatus[]{
     },
     [status]
   )
-  return reList
+  return [reList, apy]
 }
 
 export class FundHistory{
