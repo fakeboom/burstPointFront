@@ -69,7 +69,7 @@ export function useFundStatus(index : number) : [FundStatus[], string]{
         const dataRev = (data.data as any[]).reverse()
         setStatus(dataRev as never[])
         setApy(data[apyKey])
-        console.log(apyKey, data[apyKey] )
+        console.log(apyKey, data[apyKey], index )
 
     },3000)
     return () =>{

@@ -196,7 +196,13 @@ export function FundTokenCard({token}:{token : Token }){
     )
 
     const [_  , apy ] = useFundStatus(tokenIndex)
-    const ApyShow = fixFloat(parseFloat(apy) * 100, 3) + '%'
+    const ApyShow = useMemo(
+        ()=>{
+            return fixFloat(parseFloat(apy) * 100, 3) + '%'
+        },
+        [apy]
+    )
+        
 
     const shareTokenCon = useTokenContract( shareTokenAddress , false)
     const shareTokenBalance = tokenAmountForshow(useSingleCallResult(shareTokenCon, "balanceOf", [account??'']).result??'0', token.decimals)
