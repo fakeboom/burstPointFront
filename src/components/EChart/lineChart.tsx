@@ -4,8 +4,8 @@ import Echart from './'
 import { useFundStatus, FundStatus } from 'data/History'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 
-const LeftTwo: React.FC = () => {
-    const statusList = useFundStatus()
+function LeftTwo({index}:{index : number}){
+    const statusList = useFundStatus(index)
     const [xAxisData, data0, data1] = useMemo(
         ()=>{
             let xAxisData = []
@@ -18,8 +18,8 @@ const LeftTwo: React.FC = () => {
                     ((date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1))+'/'+
                     (date.getDay()<10 ? '0' + date.getDay() : date.getDay())
                 )
-                data0.push(parseFloat(fixFloat((statusList[i].token0value - 1)* 100,3) as string))
-                data1.push(parseFloat(fixFloat((statusList[i].token1value - 1)* 100,3) as string))
+                data0.push(parseFloat(fixFloat((statusList[i].tokenNetValue - 1)* 100,3) as string))
+                data1.push(parseFloat(fixFloat((statusList[i].tokenLossValue - 1)* 100,3) as string))
             }
             return [xAxisData, data0, data1]
         },
@@ -28,6 +28,13 @@ const LeftTwo: React.FC = () => {
     const option: EChartOption = {
         tooltip: {
             trigger: 'axis'
+        },
+        legend:{
+            itemWidth: 100,
+            inactiveColor: 'rgba(255, 255, 255, 0.5)',
+            textStyle:{
+                color: '#FFF',
+            }
         },
         grid: {
             left: '1%',

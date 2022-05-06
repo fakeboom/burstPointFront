@@ -406,7 +406,7 @@ export function FundTokenCard({token}:{token : Token }){
                         }
                     </div>
                     <div style={{width:'48%', padding:'20px', minHeight:'400px'}}>
-                        <LeftTwo/>
+                        <LeftTwo index={tokenIndex}/>
                     </div>
                 </div>
                 :

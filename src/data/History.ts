@@ -57,7 +57,9 @@ export function useFundHistory(index:number) : any{
     return [reList, inSum, outSum]
 }
 
-export function useFundStatus() : FundStatus[]{
+export function useFundStatus(index : number) : FundStatus[]{
+  let netValueKey = index == 0 ? 'token0NetValue' : 'token1NetValue'
+  let lossValueKey = index == 0 ? 'token0LossValue' : 'token1LossValue'
   const [status , setStatus] = useState([])
   useEffect(()=>{
     const timer = setInterval(async ()=>{
@@ -79,8 +81,8 @@ export function useFundStatus() : FundStatus[]{
           let temp = new FundStatus(
             {
               timestamp: element.timestamp,
-              token0value: parseFloat(element.token0NetValue),
-              token1value: parseFloat(element.token1NetValue)
+              tokenNetValue: parseFloat(element[netValueKey]),
+              tokenLossValue: parseFloat(element[lossValueKey])
             }
           )
           reList.push(temp)
@@ -106,8 +108,8 @@ export class FundHistory{
 
 export class FundStatus{
   public readonly timestamp : number
-  public readonly token0value: number
-  public readonly token1value: number
+  public readonly tokenNetValue: number
+  public readonly tokenLossValue: number
   constructor(data: Partial<FundStatus>){
     Object.assign(this, data);
   }
