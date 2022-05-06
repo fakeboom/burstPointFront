@@ -196,11 +196,12 @@ export function FundTokenCard({token}:{token : Token }){
     )
 
     const [_  , apy ] = useFundStatus(tokenIndex)
+
     const ApyShow = useMemo(
         ()=>{
             return fixFloat(parseFloat(apy) * 100, 3) + '%'
         },
-        [apy]
+        [tokenIndex, token0, token1, staticsInfos]
     )
         
 

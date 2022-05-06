@@ -76,7 +76,7 @@ export function useFundStatus(index : number) : [FundStatus[], string]{
         console.log("@@useFundStatusHooks destroy")
       clearInterval(timer)
     }
-  },[])
+  },[index])
   const reList = useMemo(
     ()=>{
       let reList : FundStatus[] = []
