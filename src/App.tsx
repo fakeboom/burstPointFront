@@ -5,7 +5,7 @@ import Web3 from './components/Web'
 import './assets/o.css';
 import { useActiveWeb3React } from './hooks'
 import { DefaultChainId , FUND_PAIR} from './constants'
-import { FundTokenCard } from './components/Fund'
+import { FundTokenCard , StrategyCard} from './components/Fund'
 import { useSelector } from 'react-redux'
 import { AppState } from 'state'
 import { useTokenContract , useFundContract} from 'hooks/useContract'
@@ -86,6 +86,7 @@ function App() {
             { return (<FundTokenCard token={token} />)}
           )
         }
+        <StrategyCard/>
       </div>
     </div>
   );

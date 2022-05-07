@@ -8,7 +8,7 @@ import { useApproveCallback,ApprovalState } from '../../hooks/useApproveCallback
 import { useActiveWeb3React } from '../../hooks'
 import { useTokenContract , useFundContract} from 'hooks/useContract'
 import { useSingleCallResult } from 'state/multicall/hooks'
-import { FUND_ADDRESS , DefaultChainId} from '../../constants'
+import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 import { Input as NumericalInput } from '../NumericalInput'
@@ -107,6 +107,28 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
         stroke-width: 1.5px;
     }
 `
+
+export function StrategyCard(){
+    const { account , chainId } = useActiveWeb3React()
+    return(
+        <div className="card">
+            <CardText style={{width : '100%', textAlign:'left', display:'inline-block'}}>
+                Strategy 1:
+            </CardText>
+            <CardText style={{width : '100%', textAlign:'left', display:'inline-block'}}>        
+                Supplies ROSE to &nbsp;
+                <a style={{position:'relative'}} target='_blank' href="https://app.yuzu-swap.com" >Yuzu Swap</a> 
+                &nbsp; 
+                ROSE-USDT Pair to earn YUZU. Earned tokens are harvested, sold for more ROSE which is deposited back into the strategy.
+            </CardText>
+            <CardText style={{width : '100%', textAlign:'right', display:'inline-block'}}>
+                <a style={{position:'relative'}} target='_blank' href={(CHAIN_CONFIG as any)[chainId ?? DefaultChainId].blockExplorerUrl + 'address/' +FUND_ADDRESS[chainId ?? DefaultChainId] + '/transactions'} >
+                    Contract
+                </a> 
+            </CardText>
+        </div>
+    )
+}
 
 export function FundTokenCard({token}:{token : Token }){
     const [ ma, setMa] = useState<boolean>(false)
