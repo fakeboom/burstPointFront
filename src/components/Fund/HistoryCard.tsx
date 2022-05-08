@@ -139,7 +139,7 @@ export function HistoryCard({tokenIndex, token}:{ tokenIndex:number, token : Tok
                         <CardText1 style={{flex:'2', textAlign:'right'}}>{fixFloat(tokenAmountForshow(item.originAmount, token.decimals),3)}&nbsp;{token.symbol}</CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right'}}>{data.getFullYear()+'/'+
                             ((data.getMonth()+1 < 10 ? '0'+(data.getMonth()+1) : data.getMonth()+1))+'/'+
-                            (data.getDay()<10 ? '0' + data.getDay() : data.getDay())}</CardText1>
+                            (data.getDate()<10 ? '0' + data.getDate() : data.getDate())}</CardText1>
                         <span style={{flex:'1', textAlign:'right'}}>
                             <ClickImg 
                                 onClick={

@@ -322,125 +322,128 @@ export function FundTokenCard({token}:{token : Token }){
             </div>
             {
                 ma?
-                <div style={{display: 'flex', justifyContent:'space-between'}}>
-                    <div style={{width:'48%'}}>
-                        <div style={{display: 'flex', justifyContent:'flex-start', marginLeft:'20px'}}>
-                            <CardTab selected={labelIndex == 0} onClick={()=>{setLabelIndex(0)}} >
-                                Deposit
-                            </CardTab>
-                            <CardTab selected={labelIndex == 1} onClick={()=>{setLabelIndex(1)}} >
-                                Withdraw
-                            </CardTab>
-                            <CardTab selected={labelIndex == 2} onClick={()=>{setLabelIndex(2)}} >
-                                History
-                            </CardTab>
-                        </div>
-                        {
-                        labelIndex == 0?
-                        <div className="card" >
-                                <Row>
-                                    <span>Input Amount</span>
-                                    <span>Balance:&nbsp; {tokenBalance?.toSignificant(6)}&nbsp;{token.symbol} </span>
-                                </Row>
-                                <InputRow>
-                                    <NumericalInput
-                                        style={{fontSize:'20px', color:'rgba(255, 255, 255, 0.6)'}}
-                                        value={input}
-                                        onUserInput={val => {
-                                            setInput(val)
-                                        }
-                                        }
-                                    />
-                                    <MaxButton
-                                        style={{margin:'auto 0px'}}
-                                        onClick={onMax}
-                                    >Max</MaxButton>
-                                </InputRow>
-                                {
-                                    inputCheck?
+                <div style={{display: 'flex', flexDirection:'column'}}>
+                    <div style={{display: 'flex', justifyContent:'space-between'}}>
+                        <div style={{width:'48%'}}>
+                            <div style={{display: 'flex', justifyContent:'flex-start', marginLeft:'20px'}}>
+                                <CardTab selected={labelIndex == 0} onClick={()=>{setLabelIndex(0)}} >
+                                    Deposit
+                                </CardTab>
+                                <CardTab selected={labelIndex == 1} onClick={()=>{setLabelIndex(1)}} >
+                                    Withdraw
+                                </CardTab>
+                                <CardTab selected={labelIndex == 2} onClick={()=>{setLabelIndex(2)}} >
+                                    History
+                                </CardTab>
+                            </div>
+                            {
+                            labelIndex == 0?
+                            <div className="card" >
                                     <Row>
-                                        <span>Get&nbsp;Funds</span>
-                                        <span>{fixFloatFloor(parseFloat(input) * (1/fundTransRatio), 6)}</span>
+                                        <span>Input Amount</span>
+                                        <span>Balance:&nbsp; {tokenBalance?.toSignificant(6)}&nbsp;{token.symbol} </span>
                                     </Row>
-                                    :
-                                    null
-                                }
-                                {
-                                    !account?
-                                    <FailButton>Connect a Wallet</FailButton>
-                                    :
-                                    approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING?
-                                    <ApproveButton
-                                        onClick={approveCallback}
-                                    >Approve
-                                    </ApproveButton>
-                                    :
-                                    inputCheck?
-                                    <DepositButton
-                                        onClick={()=>{
-                                            subscribe()
-                                            setInput('0.0')
-                                        }}
-                                        >Deposit</DepositButton>
-                                    :
-                                    <FailButton>Invalid Input</FailButton>
-                                }
-                        </div>
-                        :
-                        labelIndex == 1?
-                        <div className="card" >
-                                <Row>
-                                    <span>Input Amount</span>
-                                    <span>Balance:&nbsp;{fixFloatFloor(shareTokenBalance,6)}&nbsp;{token.symbol}Fund </span>
-                                </Row>
-                                <Row>
-                                    <span> </span>
-                                    <CardText2>-Corresponding to&nbsp;{fixFloatFloor(shareTokenBalance * fundTransRatio,6)}&nbsp;{token.symbol}</CardText2>
-                                </Row>
-                                <InputRow>
-                                    <NumericalInput
-                                        style={{fontSize:'20px', color:'rgba(255, 255, 255, 0.6)'}}
-                                        value={shareInput}
-                                        onUserInput={val => {
-                                            setShareInput(val)
-                                        }
-                                        }
-                                    />
-                                    <MaxButton
-                                        style={{margin:'auto 0px'}}
-                                        onClick={onShareMax}
-                                    >Max</MaxButton>
-                                </InputRow>
-                                {
-                                    shareInputCheck?
+                                    <InputRow>
+                                        <NumericalInput
+                                            style={{fontSize:'20px', color:'rgba(255, 255, 255, 0.6)'}}
+                                            value={input}
+                                            onUserInput={val => {
+                                                setInput(val)
+                                            }
+                                            }
+                                        />
+                                        <MaxButton
+                                            style={{margin:'auto 0px'}}
+                                            onClick={onMax}
+                                        >Max</MaxButton>
+                                    </InputRow>
+                                    {
+                                        inputCheck?
+                                        <Row>
+                                            <span>Get&nbsp;Funds</span>
+                                            <span>{fixFloatFloor(parseFloat(input) * (1/fundTransRatio), 6)}</span>
+                                        </Row>
+                                        :
+                                        null
+                                    }
+                                    {
+                                        !account?
+                                        <FailButton>Connect a Wallet</FailButton>
+                                        :
+                                        approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING?
+                                        <ApproveButton
+                                            onClick={approveCallback}
+                                        >Approve
+                                        </ApproveButton>
+                                        :
+                                        inputCheck?
+                                        <DepositButton
+                                            onClick={()=>{
+                                                subscribe()
+                                                setInput('0.0')
+                                            }}
+                                            >Deposit</DepositButton>
+                                        :
+                                        <FailButton>Invalid Input</FailButton>
+                                    }
+                            </div>
+                            :
+                            labelIndex == 1?
+                            <div className="card" >
                                     <Row>
-                                        <span>Get&nbsp;{token.symbol}</span>
-                                        <span>{fixFloatFloor(parseFloat(shareInput) * fundTransRatio, 6)}</span>
+                                        <span>Input Amount</span>
+                                        <span>Balance:&nbsp;{fixFloatFloor(shareTokenBalance,6)}&nbsp;{token.symbol}Fund </span>
                                     </Row>
-                                    :
-                                    null
-                                }
-                                {
-                                    !account?
-                                    <FailButton>Connect a Wallet</FailButton>
-                                    :
-                                    shareInputCheck?
-                                    <DepositButton
-                                        onClick={()=>{
-                                            redeem()
-                                            setShareInput('0.0')
-                                        }}
-                                        >WithDraw</DepositButton>
-                                    :
-                                    <FailButton>Invalid Input</FailButton>
-                                }
+                                    <Row>
+                                        <span> </span>
+                                        <CardText2>-Corresponding to&nbsp;{fixFloatFloor(shareTokenBalance * fundTransRatio,6)}&nbsp;{token.symbol}</CardText2>
+                                    </Row>
+                                    <InputRow>
+                                        <NumericalInput
+                                            style={{fontSize:'20px', color:'rgba(255, 255, 255, 0.6)'}}
+                                            value={shareInput}
+                                            onUserInput={val => {
+                                                setShareInput(val)
+                                            }
+                                            }
+                                        />
+                                        <MaxButton
+                                            style={{margin:'auto 0px'}}
+                                            onClick={onShareMax}
+                                        >Max</MaxButton>
+                                    </InputRow>
+                                    {
+                                        shareInputCheck?
+                                        <Row>
+                                            <span>Get&nbsp;{token.symbol}</span>
+                                            <span>{fixFloatFloor(parseFloat(shareInput) * fundTransRatio, 6)}</span>
+                                        </Row>
+                                        :
+                                        null
+                                    }
+                                    {
+                                        !account?
+                                        <FailButton>Connect a Wallet</FailButton>
+                                        :
+                                        shareInputCheck?
+                                        <DepositButton
+                                            onClick={()=>{
+                                                redeem()
+                                                setShareInput('0.0')
+                                            }}
+                                            >WithDraw</DepositButton>
+                                        :
+                                        <FailButton>Invalid Input</FailButton>
+                                    }
+                            </div>
+                            :<HistoryCard  token={token} tokenIndex={tokenIndex} />
+                            }
                         </div>
-                        :<HistoryCard  token={token} tokenIndex={tokenIndex} />
-                        }
+                        <div style={{width:'48%', padding:'20px', minHeight:'400px'}}>
+                            <LeftTwo index={tokenIndex}/>
+                        </div>
                     </div>
-                    <div style={{width:'48%', padding:'20px', minHeight:'400px'}}>
-                        <LeftTwo index={tokenIndex}/>
-                    </div>
+                    <StrategyCard/>
                 </div>
                 :
                 null

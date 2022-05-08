@@ -16,7 +16,7 @@ function LeftTwo({index}:{index : number}){
                 xAxisData.push(
                     date.getFullYear()+'/'+
                     ((date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1))+'/'+
-                    (date.getDay()<10 ? '0' + date.getDay() : date.getDay())
+                    (date.getDate()<10 ? '0' + date.getDate() : date.getDate())
                 )
                 data0.push(parseFloat(fixFloat((statusList[i].tokenNetValue - 1)* 100,3) as string))
                 data1.push(parseFloat(fixFloat((statusList[i].tokenLossValue - 1)* 100,3) as string))
