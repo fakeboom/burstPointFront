@@ -44,3 +44,18 @@
 .card-button:hover{
     opacity: 0.5;
 }
+
+.app-slogn{
+    color: #FFF;
+    font-weight: 500;
+    font-size: 30px;
+    margin: 30px auto;
+}
+
+.app-link a:hover{
+    color: #dbdb73;
+}
+
+.app-link a{
+    color: #3c78d8;
+}

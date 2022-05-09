@@ -111,17 +111,15 @@ const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
 export function StrategyCard(){
     const { account , chainId } = useActiveWeb3React()
     return(
-        <div className="card">
+        <div className="card" style={{padding:'20px 30px'}}>
             <CardText style={{width : '100%', textAlign:'left', display:'inline-block'}}>
-                Strategy 1:
+                Strategy:
             </CardText>
             <CardText style={{width : '100%', textAlign:'left', display:'inline-block'}}>        
-                Supplies ROSE to &nbsp;
-                <a style={{position:'relative'}} target='_blank' href="https://app.yuzu-swap.com" >Yuzu Swap</a> 
-                &nbsp; 
-                ROSE-USDT Pair to earn YUZU. Earned tokens are harvested, sold for more ROSE which is deposited back into the strategy.
+            The Impermanet Loss Immune Strategy helps single token holders pair up to mine in Dex, 
+            while minimize the impermanet loss by avoiding possible trade on-chain, and automaticlly rebalance and compound.
             </CardText>
-            <CardText style={{width : '100%', textAlign:'right', display:'inline-block'}}>
+            <CardText style={{width : '100%', textAlign:'right', display:'inline-block'}} className="app-link">
                 <a style={{position:'relative'}} target='_blank' href={(CHAIN_CONFIG as any)[chainId ?? DefaultChainId].blockExplorerUrl + 'address/' +FUND_ADDRESS[chainId ?? DefaultChainId] + '/transactions'} >
                     Contract
                 </a> 

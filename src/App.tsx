@@ -12,6 +12,7 @@ import { useTokenContract , useFundContract} from 'hooks/useContract'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 import styled from 'styled-components'
+import Logo from 'assets/images/monoLogo.jpg'
 
 
 const CardUnit = styled.div`
@@ -70,10 +71,13 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div/>
+        <img src={Logo} height='50px'/>
         <Web3/>
       </header>
       <div className="app-body">
+        <div className="app-slogn">
+        A Smart Fund Allowing Single Token Holders to Mine LP Pools without Impermanent Loss.
+        </div>
         <div className="card">
           <CardUnit>
             <CardText>${totalLock}</CardText>
