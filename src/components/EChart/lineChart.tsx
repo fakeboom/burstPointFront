@@ -72,7 +72,7 @@ function LeftTwo({index}:{index : number}){
         ],
         series: [
             {
-                name: 'tokenNetValue',
+                name: 'net profit',
                 type: 'line',
                 data: data0,
                 itemStyle: {
@@ -97,7 +97,7 @@ function LeftTwo({index}:{index : number}){
                 areaStyle: {}
             },
             {
-                name: 'tokenLossValue',
+                name: 'impermanent loss',
                 type: 'line',
                 data: data1,
                 itemStyle: {
