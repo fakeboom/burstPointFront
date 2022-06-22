@@ -5,39 +5,31 @@ import { useFundStatus, FundStatus } from 'data/History'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 
 function LeftTwo({index}:{index : number}){
-    const [statusList, _] = useFundStatus(index)
-    const [xAxisData, data0, data1] = useMemo(
+
+    const startBlockNum = 100
+    const nowBlockNum = 400
+    const rate = 0.001
+    const [xAxisData, data0] = useMemo(
         ()=>{
             let xAxisData = []
             let data0 = []
-            let data1 = []
-            for(let i = 0; i < statusList.length; i++){
-                let date = new Date(statusList[i].timestamp)
-                xAxisData.push(
-                    date.getFullYear()+'/'+
-                    ((date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1))+'/'+
-                    (date.getDate()<10 ? '0' + date.getDate() : date.getDate())
-                )
-                data0.push(parseFloat(fixFloat((statusList[i].tokenNetValue - 1)* 100,3) as string))
-                data1.push(parseFloat(fixFloat((statusList[i].tokenLossValue - 1)* 100,3) as string))
+            for(let i = startBlockNum; i< nowBlockNum; i++){
+                xAxisData.push( i - startBlockNum)
+                let rand = Math.floor(Math.random() * 100)
+                data0.push( 1 + i* rate + rand * 0.00001 )
             }
-            return [xAxisData, data0, data1]
+            return [xAxisData, data0]
         },
-        [statusList]
+        []
     )
+
+    const color = "#EB7D0D"
     const option: EChartOption = {
         tooltip: {
-            trigger: 'axis'
-        },
-        legend:{
-            itemWidth: 100,
-            inactiveColor: 'rgba(255, 255, 255, 0.5)',
-            textStyle:{
-                color: '#FFF',
-            },
-
+            trigger: 'none'
         },
         grid: {
+            show: false,
             left: '1%',
             right: '5%',
             top: '8%',
@@ -60,13 +52,16 @@ function LeftTwo({index}:{index : number}){
         yAxis: [
             {
                 type: 'value',
+                scale: true,
                 axisLabel: {
-                    formatter: '{value}%'
                 },
                 axisLine: {
                     lineStyle: {
                         color: 'rgba(255,255,255,0.6)'
                     }
+                },
+                splitLine:{
+                    show : false
                 }
             },
         ],
@@ -91,32 +86,7 @@ function LeftTwo({index}:{index : number}){
                             width: 2
                         },
                         borderColor: 'rgba(145, 199, 174,1)',
-                        borderWidth: '2'
-                    }
-                },
-                areaStyle: {}
-            },
-            {
-                name: 'impermanent loss',
-                type: 'line',
-                data: data1,
-                itemStyle: {
-                    normal: {
-                        color: new echarts.graphic.LinearGradient(
-                            0, 1, 0, 0,
-                            [{
-                                offset: 0, color: 'rgba(97, 160, 168, 0)' // 0% 处的颜色
-                            }, {
-                                offset: 1, color: 'rgb(97, 160, 168,0.6)' // 100% 处的颜色
-                            }]
-                        ),
-                        lineStyle: {
-                            color: 'rgb(97, 160, 168,1)',
-                            opacity: 0.8,
-                            width: 2
-                        },
-                        borderColor: 'rgba(97, 160, 168,1)',
-                        borderWidth: '2'
+                        borderWidth: '0'
                     }
                 },
                 areaStyle: {}
@@ -124,7 +94,10 @@ function LeftTwo({index}:{index : number}){
         ],
     };
     return (
-        <Echart option={option} />
+        <div style={{ position:'relative', width:' 800px', height: '360px'}}>
+            <div style={{color: color, position:'absolute', left: '35%', top:' 20', fontSize:'100px', zIndex:'100'}}>{data0[data0.length - 1].toFixed(2)}X</div>
+            <Echart option={option} />
+        </div>
     )
 }
 

@@ -66,31 +66,13 @@ function App() {
   )
   
 
-  console.log('testprices', prices)
-
   return (
     <div className="App">
       <header className="App-header">
-        <img src={Logo} height='50px'/>
+        <div>BurstPoint</div>
         <Web3/>
       </header>
-      <div className="app-body">
-        <div className="app-slogn">
-        A Smart Fund Allowing Single Token Holders to Mine LP Pools without Impermanent Loss.
-        </div>
-        <div className="card">
-          <CardUnit>
-            <CardText>${totalLock}</CardText>
-            <CardText1>Total Value Locked</CardText1>
-          </CardUnit>
-        </div>
-        {
-          fundPair?.map(
-            token=>
-            { return (<FundTokenCard token={token} />)}
-          )
-        }
-      </div>
+      {fundPair&&<FundTokenCard token={fundPair[0]} />}
     </div>
   );
 }

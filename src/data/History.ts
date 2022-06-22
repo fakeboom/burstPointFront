@@ -118,3 +118,38 @@ export class FundStatus{
     Object.assign(this, data);
   }
 }
+
+export enum GameStatus{
+  Pending,
+  Fail,
+  Success
+}
+
+export enum GameProcessStatus{
+  Prepare,
+  Bet,
+  Going,
+  End
+}
+
+export class GameRcord{
+  public readonly id : number
+  public readonly playerAddress: String
+  public readonly betAmount: Decimal
+  public readonly status: GameStatus
+  public readonly finalGuess: number
+  public readonly earnAmount: Decimal
+  public readonly hash: String
+  constructor(data: Partial<GameRcord>){
+    Object.assign(this, data);
+  }
+}
+
+export class GameProcessShow{
+  public readonly blockNumber: number
+  public readonly processStatus: GameProcessStatus
+  public readonly addPerBlock: number
+  constructor(data: Partial<GameProcessShow>){
+    Object.assign(this, data);
+  }
+}

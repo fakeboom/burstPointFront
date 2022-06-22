@@ -6,18 +6,53 @@ import { useSingleCallResult } from 'state/multicall/hooks'
 import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
-import { useFundHistory, FundHistory } from 'data/History'
+import { useFundHistory, FundHistory, GameRcord, GameStatus } from 'data/History'
 import { Token , TokenAmount, JSBI } from '@liuxingfeiyu/zoo-sdk'
 import JumpImg from '../../assets/images/web-link.png'
 import { isWindows } from 'react-device-detect'
 
-export function HistoryCard({tokenIndex, token}:{ tokenIndex:number, token : Token }){
+export function HistoryCard({}:{ }){
 
-    const [history, inSum, outSum] = useFundHistory(tokenIndex)
+    //const [history, inSum, outSum] = useFundHistory(tokenIndex)
 
-    const inSumShow = transToThousandth(fixFloat(tokenAmountForshow(inSum, token.decimals),3))
+    const history: GameRcord[] = [
+        new GameRcord(
+            {
+                id: 100,
+                playerAddress: "0x123123",
+                betAmount: new Decimal(123.12),
+                status: GameStatus.Pending,
+                finalGuess: 1.2,
+                earnAmount: new Decimal(123.12),
+                hash: ""
+            }),
+        new GameRcord(
+            {
+                id: 100,
+                playerAddress: "0x123123",
+                betAmount: new Decimal(123.12),
+                status: GameStatus.Fail,
+                finalGuess: 1.2,
+                earnAmount: new Decimal(123.12),
+                hash: ""
+            }),  
+        new GameRcord(
+            {
+                id: 100,
+                playerAddress: "0x123123",
+                betAmount: new Decimal(123.12),
+                status: GameStatus.Success,
+                finalGuess: 1.2,
+                earnAmount: new Decimal(123.12),
+                hash: ""
+            }) 
+    ]
 
-    const outSumShow = transToThousandth(fixFloat(tokenAmountForshow(outSum, token.decimals),3))
+    const color : { [ gameStatus in GameStatus]: string } = {
+        [GameStatus.Pending] : "#ECBA0A",
+        [GameStatus.Success] : "#38EC0A",
+        [GameStatus.Fail] : "#EC300A"
+    }
 
     const { account, chainId } = useActiveWeb3React()
 
@@ -59,19 +94,15 @@ export function HistoryCard({tokenIndex, token}:{ tokenIndex:number, token : Tok
     `
 
 
-    const [BuyList, RedeemList] = useMemo(
+    const myList = useMemo(
         ()=>{
-            let BuyList : FundHistory[] = []
-            let RedeemList : FundHistory[] = []
+            let myList : GameRcord[] = []
             for(let i = 0; i< history.length; i++){
-                if(history[i].event == 'Redeemed'){
-                    RedeemList.push(history[i])
-                }
-                else{
-                    BuyList.push(history[i])
+                if(history[i].status == GameStatus.Pending){
+                    myList.push(history[i])
                 }
             } 
-            return [BuyList, RedeemList]
+            return myList
         },
         [history]
     )
@@ -87,27 +118,14 @@ export function HistoryCard({tokenIndex, token}:{ tokenIndex:number, token : Tok
                 setList(history)
             }
             if(num == 1){
-                setList(BuyList)
-            }
-            if(num == 2){
-                setList(RedeemList)
+                setList(myList)
             }
         }
-        ,[history]
+        ,[num]
     )
 
     return (
-        <div className="card" style={{}}>
-            <Row> 
-                <Column>
-                    <CardText>{inSumShow}&nbsp;{token.symbol}</CardText>
-                    <CardText1>Total Invest</CardText1>
-                </Column>
-                <Column>
-                    <CardText>{outSumShow}&nbsp;{token.symbol}</CardText>
-                    <CardText1>Total Redeem</CardText1>
-                </Column>
-            </Row>
+        <div className="card" style={{margin: '30px'}}>
             <Row style={{justifyContent:'flex-start',borderBottom:'1px solid rgba(255, 255, 255, 0.6)'}}>
                 <CardTab selected={num == 0} onClick={
                     ()=>{
@@ -117,29 +135,42 @@ export function HistoryCard({tokenIndex, token}:{ tokenIndex:number, token : Tok
                 }>All</CardTab>
                 <CardTab selected={num == 1} onClick={
                     ()=>{
-                        setList(BuyList)
+                        setList(myList)
                         setNum(1)
                     }
-                }>Buy</CardTab>
-                <CardTab selected={num == 2} onClick={
-                    ()=>{
-                        setList(RedeemList)
-                        setNum(2)
-                    }
-                }>Redeem</CardTab>
+                }>Mine</CardTab>
             </Row>
+            <Row style={{borderBottom:'1px solid rgba(255, 255, 255, 0.6)'}}>
+                        <CardText1 style={{minWidth:'100px'}}>id</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>burstPoint</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>betAmount</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>earnAmount</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>player</CardText1>
+                        <span style={{flex:'1', textAlign:'right'}}>
+
+                        </span>
+                    </Row>
             <div style = {{maxHeight : '300px', overflow:'scroll'}}>
             {
                 list.map(
-                    (item : FundHistory)=>{
-                    const data = new Date(item.timestamp)
+                    (item : GameRcord)=>{
                     return(
                     <Row style={{borderBottom:'1px solid rgba(255, 255, 255, 0.6)'}}>
-                        <CardText1 style={{minWidth:'100px'}}>{item.event}</CardText1>
-                        <CardText1 style={{flex:'2', textAlign:'right'}}>{fixFloat(tokenAmountForshow(item.originAmount, token.decimals),3)}&nbsp;{token.symbol}</CardText1>
-                        <CardText1 style={{flex:'2', textAlign:'right'}}>{data.getFullYear()+'/'+
-                            ((data.getMonth()+1 < 10 ? '0'+(data.getMonth()+1) : data.getMonth()+1))+'/'+
-                            (data.getDate()<10 ? '0' + data.getDate() : data.getDate())}</CardText1>
+                        <CardText1 style={{minWidth:'100px'}}>{item.id}</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>{item.finalGuess}</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>{fixFloat(tokenAmountForshow(item.betAmount, 18),3)}&nbsp;ETH</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right', color: color[item.status]}}>
+                            {
+                                item.status == GameStatus.Pending?
+                                "Pending"
+                                :
+                                item.status == GameStatus.Success?
+                                fixFloat(tokenAmountForshow(item.earnAmount, 18),3) + ' ETH'
+                                :
+                                '-'                           
+                            }
+                            </CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>{item.playerAddress}</CardText1>
                         <span style={{flex:'1', textAlign:'right'}}>
                             <ClickImg 
                                 onClick={
