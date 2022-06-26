@@ -1,26 +1,30 @@
 import echarts, { EChartOption } from 'echarts';
 import React, { useCallback, useContext,useRef, useEffect, useMemo, useState } from 'react'
 import Echart from './'
-import { useFundStatus, FundStatus } from 'data/History'
+import { useFundStatus, FundStatus, useGameId} from 'data/History'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
+import {useBlockNumber } from 'state/application/hooks'
 
-function LeftTwo({index}:{index : number}){
+function LeftTwo({}:{}){
 
-    const startBlockNum = 100
-    const nowBlockNum = 400
-    const rate = 0.001
+    const nowBlockNum = useBlockNumber()
+    const rate = 0.1
+    const startBlockNum = useGameId()
     const [xAxisData, data0] = useMemo(
         ()=>{
             let xAxisData = []
             let data0 = []
-            for(let i = startBlockNum; i< nowBlockNum; i++){
-                xAxisData.push( i - startBlockNum)
+            if( startBlockNum == 0 || !nowBlockNum){
+                return [[], []]
+            }
+            for(let i = startBlockNum + 10; i< nowBlockNum; i++){
+                xAxisData.push( i )
                 let rand = Math.floor(Math.random() * 100)
-                data0.push( 1 + i* rate + rand * 0.00001 )
+                data0.push( 1 + (i - startBlockNum - 10) * rate + rand * 0.00001 )
             }
             return [xAxisData, data0]
         },
-        []
+        [nowBlockNum, startBlockNum]
     )
 
     const color = "#EB7D0D"
@@ -95,7 +99,12 @@ function LeftTwo({index}:{index : number}){
     };
     return (
         <div style={{ position:'relative', width:' 800px', height: '360px'}}>
-            <div style={{color: color, position:'absolute', left: '35%', top:' 20', fontSize:'100px', zIndex:'100'}}>{data0[data0.length - 1].toFixed(2)}X</div>
+            <div style={{color: color, position:'absolute', left: '35%', top:' 20', fontSize:'100px', zIndex:'100'}}>
+                {data0.length >= 1 ? 
+                    data0[data0.length - 1].toFixed(2) + 'X'
+                    :
+                    'Waiting'}
+            </div>
             <Echart option={option} />
         </div>
     )

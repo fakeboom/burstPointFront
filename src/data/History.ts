@@ -99,6 +99,30 @@ export function useFundStatus(index : number) : [FundStatus[], string]{
   return [reList, apy]
 }
 
+export function useGameId(): number{
+  const [block , setBlock] = useState<string>('0')
+  useEffect(()=>{
+    const timer = setInterval(async ()=>{
+        const data = await(await fetch(APIHost + "/getgamestatus")).json();
+        console.log('data', data)
+        setBlock(data.data)
+
+    },3000)
+    return () =>{
+        console.log("@@useGameId destroy")
+      clearInterval(timer)
+    }
+  },[])
+  const re : number = useMemo(
+    ()=>{
+      let re = 0; 
+      re = parseInt(block)
+      return re
+    },[block]
+  )
+  return re
+}
+
 export class FundHistory{
   public readonly event : String
   public readonly hash : String

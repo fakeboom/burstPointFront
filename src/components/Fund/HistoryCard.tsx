@@ -1,7 +1,7 @@
 import React, { useCallback, useContext,useRef, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
-import { useTokenContract , useFundContract} from 'hooks/useContract'
+import { useTokenContract } from 'hooks/useContract'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'

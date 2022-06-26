@@ -1,21 +1,22 @@
-import { Token , TokenAmount, JSBI } from '@liuxingfeiyu/zoo-sdk'
+import { Token , TokenAmount, JSBI ,Currency, CurrencyAmount} from '@liuxingfeiyu/zoo-sdk'
 import React, { useCallback, useContext,useRef, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import CurrencyLogo from '../CurrencyLogo'
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { useCurrencyBalance , useETHBalances} from '../../state/wallet/hooks'
 import { useApproveCallback,ApprovalState } from '../../hooks/useApproveCallback'
 import { useActiveWeb3React } from '../../hooks'
-import { useTokenContract , useFundContract} from 'hooks/useContract'
+import { useTokenContract } from 'hooks/useContract'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 import { Input as NumericalInput } from '../NumericalInput'
-import { useFundRedeemCallback, useFundSubscribeCallback} from 'hooks/useFundCallback'
+import { useFundRedeemCallback, useFundSubscribeCallback, useBetCallback} from 'hooks/useFundCallback'
 import { HistoryCard } from './HistoryCard'
 import LeftTwo from 'components/EChart/lineChart'
 import { useFundStatus, FundStatus } from 'data/History'
+import { useGameId} from 'data/History'
 
 const CardUnit = styled.div`
     display: flex;
@@ -128,12 +129,24 @@ export function StrategyCard(){
     )
 }
 
-export function FundTokenCard({token}:{token : Token }){
+export function FundTokenCard({}:{ }){
     const [ ma, setMa] = useState<boolean>(false)
     const [ labelIndex, setLabelIndex ] = useState<number>(0)
 
     const { account , chainId } = useActiveWeb3React()
-    const tokenBalance = useCurrencyBalance(account?? undefined, token)
+    const tokenBalance = useETHBalances([account?? undefined])
+    console.log('tokenBalance', tokenBalance)
+
+    const userBalance = useMemo(
+        ()=>{
+            if(tokenBalance && account){
+                return tokenBalance[account]
+            }
+            let nativeToken = Currency.getNativeCurrency(DefaultChainId)
+            return new CurrencyAmount(nativeToken, '0')
+        }
+        ,[tokenBalance]
+    )
 
     const [input, setInput] = useState<string>('0.0')
 
@@ -142,11 +155,11 @@ export function FundTokenCard({token}:{token : Token }){
     const onMax = useCallback(
         ()=>{
             setInput(
-                fixFloatFloor(parseFloat(tokenBalance?.toExact() ?? '0.0'), 6) as string    
+                fixFloatFloor(parseFloat(userBalance?.toExact() ?? '0.0'), 6) as string    
                 )
         }
         ,
-        [tokenBalance]
+        [userBalance]
     )
 
     const inputCheck = useMemo(
@@ -154,141 +167,32 @@ export function FundTokenCard({token}:{token : Token }){
             if( isNaN(parseFloat(input)) || parseFloat(input) == 0){
                 return false
             }
-            return parseFloat(input) > parseFloat(tokenBalance?.toExact() || '0') ? false : true
+            if(!userBalance)
+            {
+                return false
+            }
+            return parseFloat(input) > parseFloat(userBalance?.toExact() || '0') ? false : true
         },[input]
     )
     
 
     const inputToken  = useMemo(
         ()=>{
-            const bigintAmount = new Decimal(parseFloat(input=='' ? '0' : input) * Math.pow( 10, token?.decimals ||18 )).toFixed(0)
-            return new TokenAmount(token, bigintAmount)
+            let nativeToken = Currency.getNativeCurrency(DefaultChainId)
+            const bigintAmount = new Decimal(parseFloat(input=='' ? '0' : input) * Math.pow( 10, nativeToken?.decimals ||18 )).toFixed(0)
+            return new CurrencyAmount(nativeToken, bigintAmount)
         }
-        ,[token, input]
+        ,[input]
     )
 
     const [approval, approveCallback] = useApproveCallback(inputToken||undefined, FUND_ADDRESS[chainId?? DefaultChainId])
 
-    const subscribe = useFundSubscribeCallback(token.address, inputToken.raw)
+    console.log('approval',approval)
 
-    const fundContract = useFundContract()
+    const gameid = useGameId()
 
-    const token0 = useSingleCallResult(fundContract, "token0").result 
+    const bet = useBetCallback(gameid, parseInt(shareInput), inputToken.raw)
 
-    const token1 = useSingleCallResult(fundContract, "token1").result
-
-    const tokenInStake = useSingleCallResult(fundContract, "balanceInStake").result
-
-    const staticsInfos = useSingleCallResult(fundContract, "staticsInfos").result
-
-    tokenInStake && console.log("fundBalance", tokenAmountForshow(tokenInStake[0]), tokenAmountForshow(tokenInStake[1]))
-
-    staticsInfos && console.log("staticsInfos", tokenAmountForshow(staticsInfos.currShareToken0Balance))
-
-
-    const [shareTokenAddress, tokenIndex, tokenTotalKey, shareTotalKey] = useMemo(
-        ()=>{
-            let re = ''
-            let indexRe = 0
-            let handle = [token0, token1]
-            for(let i = 0 ; i< handle.length; i++){
-                let item = handle[i]
-                if(item &&  item.shareToken && item.originToken){
-                    if(item.originToken == token.address){
-                        re = item.shareToken
-                        indexRe = i
-                        break
-                    }
-                }
-            }
-            let tokenTotalKey = 'originToken0Total'
-            let shareTotalKey = 'currShareToken0Balance'
-            if(indexRe == 1)
-            {
-                tokenTotalKey = 'originToken1Total'
-                shareTotalKey = 'currShareToken1Balance'
-            }
-            
-            return [re, indexRe, tokenTotalKey, shareTotalKey]
-        }
-        ,
-        [token0, token1, staticsInfos]
-    )
-
-    const [_  , apy ] = useFundStatus(tokenIndex)
-
-    const ApyShow = useMemo(
-        ()=>{
-            return fixFloat(parseFloat(apy) * 100, 3) + '%'
-        },
-        [tokenIndex, token0, token1, staticsInfos]
-    )
-        
-
-    const shareTokenCon = useTokenContract( shareTokenAddress , false)
-    const shareTokenBalance = tokenAmountForshow(useSingleCallResult(shareTokenCon, "balanceOf", [account??'']).result??'0', token.decimals)
-
-    const fundTransRatio = useMemo(
-        ()=>{
-            let re = 0
-            if(staticsInfos){
-                let totalToken = tokenAmountForshow(staticsInfos[tokenTotalKey]??0, token.decimals)
-                let totalShare = tokenAmountForshow(staticsInfos[shareTotalKey]??0, token.decimals)
-                re = totalToken/totalShare
-            }
-            return re
-        }
-        ,
-        [tokenIndex, staticsInfos]
-    )
-
-
-    const onShareMax = useCallback(
-        ()=>{
-            setShareInput(
-                fixFloatFloor(shareTokenBalance, 6) as string    
-                )
-        }
-        ,
-        [shareTokenBalance]
-    )
-
-    const [totalTokenForShow, perInStake] = useMemo(
-        ()=>{
-            let totalTokenForShow = ''
-            let perInStake = ''
-            if(staticsInfos && tokenInStake){
-                let someToken = tokenAmountForshow(tokenInStake[tokenIndex]??0, token.decimals)
-                let totalToken = tokenAmountForshow(staticsInfos[tokenTotalKey]??0, token.decimals)
-                console.log('testTokenStake', someToken, totalToken)
-                perInStake = fixFloat(someToken / totalToken * 100, 2) as string
-                totalTokenForShow = transToThousandth(fixFloat(totalToken, 3))
-            }
-            return [totalTokenForShow, perInStake]
-        },
-        [token, staticsInfos, tokenIndex, tokenInStake, tokenTotalKey]
-    )
-
-    const shareInputCheck = useMemo(
-        ()=>{
-            if( isNaN(parseFloat(shareInput)) || parseFloat(shareInput) == 0){
-                return false
-            }
-            return parseFloat(shareInput) > shareTokenBalance ? false : true
-        },[shareInput]
-    )
-    
-    console.log("shareToken", shareTokenAddress)
-
-    const shareInputBigInt  = useMemo(
-        ()=>{
-            return new Decimal(parseFloat(shareInput == '' ? '0' : shareInput) * Math.pow( 10, token.decimals )).toFixed(0)
-        }
-        ,[ shareInput]
-    )
-
-    const redeem = useFundRedeemCallback(shareTokenAddress, JSBI.BigInt(shareInputBigInt))
-    
     return(
         <>
             <div style={{display: 'flex', flexDirection:'column'}}>
@@ -297,20 +201,20 @@ export function FundTokenCard({token}:{token : Token }){
                         <div className="card" >
                                 <Row>
                                     <span>Bet Amount</span>
-                                    <span>Balance: 0 ETH</span>
+                                    <span>Balance: {userBalance && userBalance?.toSignificant(6)} ETH</span>
                                 </Row>
                                 <InputRow>
                                     <NumericalInput
                                         style={{fontSize:'20px', color:'rgba(255, 255, 255, 0.6)'}}
-                                        value={shareInput}
+                                        value={input}
                                         onUserInput={val => {
-                                            setShareInput(val)
+                                            setInput(val)
                                         }
                                         }
                                     />
                                     <MaxButton
                                         style={{margin:'auto 0px'}}
-                                        onClick={onShareMax}
+                                        onClick={onMax}
                                     >Max</MaxButton>
                                 </InputRow>
                                 <Row>
@@ -328,32 +232,29 @@ export function FundTokenCard({token}:{token : Token }){
                                     />
                                 </InputRow>
                                 {
-                                    shareInputCheck?
-                                    <Row>
-                                        <span>Get&nbsp;{token.symbol}</span>
-                                        <span>{fixFloatFloor(parseFloat(shareInput) * fundTransRatio, 6)}</span>
-                                    </Row>
-                                    :
-                                    null
-                                }
-                                {
                                     !account?
                                     <FailButton>Connect a Wallet</FailButton>
                                     :
-                                    shareInputCheck?
+                                    approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING?
+                                        <ApproveButton
+                                            onClick={approveCallback}
+                                        >Approve
+                                    </ApproveButton>
+                                    :
+                                    inputCheck?
                                     <DepositButton
                                         onClick={()=>{
-                                            redeem()
+                                            bet()
                                             setShareInput('0.0')
                                         }}
-                                        >WithDraw</DepositButton>
+                                        >Bet</DepositButton>
                                     :
                                     <FailButton>Invalid Input</FailButton>
                                 }
                         </div>
                     </div>
                     <div style={{padding:'20px', minHeight:'300px'}}>
-                        <LeftTwo index={tokenIndex}/>
+                        <LeftTwo/>
                     </div>
                 </div>
                 <HistoryCard/>

@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts'
 import { ChainId, WETH, Token } from '@liuxingfeiyu/zoo-sdk'
 import  TokenWrapper_ABI  from '@liuxingfeiyu/zoo-core/deployments/oasistest/TokenWrapper.json'
 import  IUniswapV2PairABI  from '@uniswap/v2-core/build/IUniswapV2Pair.json'
-import  FUND_ABI from '../constants/abis/MiningFundLPManageV3.json'
+import  BURST_ABI from '../constants/abis/burstPoint.json'
 import { FUND_ADDRESS } from '../constants'
 import { useMemo } from 'react'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -58,9 +58,9 @@ export function useTokenWrapper(address?: string, withSignerIfPossible?: boolean
   return useContract(address, TokenWrapper_ABI.abi , withSignerIfPossible)
 }
 
-export function useFundContract(withSignerIfPossible?: boolean): Contract | null {
+export function useBurstContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(FUND_ADDRESS[chainId ?? ChainId.OASISETH_TEST], FUND_ABI.abi , withSignerIfPossible)
+  return useContract(FUND_ADDRESS[chainId ?? ChainId.OASISETH_TEST], BURST_ABI , withSignerIfPossible)
 }
 
 export function useMulticallContract(): Contract | null {
