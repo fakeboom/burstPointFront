@@ -123,6 +123,54 @@ export function useGameId(): number{
   return re
 }
 
+export function useGameRecord(): GameRcord[]{
+  const gameid = useGameId()
+  const [records , setRecords] = useState([])
+  useEffect(()=>{
+    const timer = setInterval(async ()=>{
+        const data = await(await fetch(APIHost + "/getbetinfo")).json();
+        console.log('data', data)
+        setRecords(data.data)
+
+    },3000)
+    return () =>{
+        console.log("@@useGameRecord destroy")
+      clearInterval(timer)
+    }
+  },[])
+  const re : GameRcord[] = useMemo(
+    ()=>{
+      let re :GameRcord[]= []; 
+      records && records.forEach(
+        (element : any)=>{
+          let earn = element.success == 1 ? new Decimal(element.amount).mul(new Decimal(parseInt(element.burstvalue)/ 100)) : new Decimal(0)
+          let status = GameStatus.Fail
+          if(element.gameid == gameid ){
+            status = GameStatus.Pending
+          }else if(element.success == 1){
+            status = GameStatus.Success
+          }
+          let temp = new GameRcord(
+            {
+              id: element.gameid,
+              playerAddress: element.address,
+              betAmount: new Decimal(element.amount),
+              finalGuess: parseInt(element.burstvalue)/ 100,
+              earnAmount: earn,
+              hash:'',
+              status: status
+            }
+          )
+          re.push(temp)
+        }
+      )
+
+      return re
+    },[records,gameid]
+  )
+  return re
+}
+
 export class FundHistory{
   public readonly event : String
   public readonly hash : String

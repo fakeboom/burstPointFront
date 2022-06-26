@@ -5,8 +5,8 @@ import { useTokenContract } from 'hooks/useContract'
 import { useSingleCallResult } from 'state/multicall/hooks'
 import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'
-import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
-import { useFundHistory, FundHistory, GameRcord, GameStatus } from 'data/History'
+import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth , showAddress} from 'utils/fixFloat'
+import { useFundHistory, FundHistory, GameRcord, GameStatus , useGameRecord} from 'data/History'
 import { Token , TokenAmount, JSBI } from '@liuxingfeiyu/zoo-sdk'
 import JumpImg from '../../assets/images/web-link.png'
 import { isWindows } from 'react-device-detect'
@@ -15,7 +15,9 @@ export function HistoryCard({}:{ }){
 
     //const [history, inSum, outSum] = useFundHistory(tokenIndex)
 
-    const history: GameRcord[] = [
+    const history: GameRcord[] = useGameRecord()
+    console.log('history', history)
+    /*[
         new GameRcord(
             {
                 id: 100,
@@ -46,7 +48,7 @@ export function HistoryCard({}:{ }){
                 earnAmount: new Decimal(123.12),
                 hash: ""
             }) 
-    ]
+    ]*/
 
     const color : { [ gameStatus in GameStatus]: string } = {
         [GameStatus.Pending] : "#ECBA0A",
@@ -98,7 +100,7 @@ export function HistoryCard({}:{ }){
         ()=>{
             let myList : GameRcord[] = []
             for(let i = 0; i< history.length; i++){
-                if(history[i].status == GameStatus.Pending){
+                if(history[i].playerAddress == account){
                     myList.push(history[i])
                 }
             } 
@@ -170,7 +172,7 @@ export function HistoryCard({}:{ }){
                                 '-'                           
                             }
                             </CardText1>
-                        <CardText1 style={{flex:'2', textAlign:'right'}}>{item.playerAddress}</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>{showAddress(item.playerAddress as string)}</CardText1>
                         <span style={{flex:'1', textAlign:'right'}}>
                             <ClickImg 
                                 onClick={
