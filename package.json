@@ -63,9 +63,9 @@
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false  react-scripts start",
     "build": "CI= GENERATE_SOURCEMAP=false react-scripts build",
-    "build-testnet": "yarn && REACT_APP_DEFAULTCHAINID=OASISETH_TEST PUBLIC_URL='' react-scripts build",
+    "build-testnet": "yarn && PUBLIC_URL='' react-scripts build",
     "build-mainnet": "yarn && PUBLIC_URL='' react-scripts build",
-    "deploy-testnet": "ssh root@119.28.186.224 mkdir -p /data/smartfund-test && scp  -r ./build/* root@119.28.186.224:/data/smartfund-test/",
+    "deploy-testnet": "ssh root@119.28.186.224 mkdir -p /data/burstPoint && scp  -r ./build/* root@119.28.186.224:/data/burstPoint/",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
