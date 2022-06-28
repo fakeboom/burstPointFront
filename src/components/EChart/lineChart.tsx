@@ -10,19 +10,23 @@ function LeftTwo({}:{}){
     const nowBlockNum = useBlockNumber()
     const rate = 0.1
     const startBlockNum = useGameId()
-    const [xAxisData, data0] = useMemo(
+    const [xAxisData, data0, timeToBet] = useMemo(
         ()=>{
             let xAxisData = []
             let data0 = []
-            if( startBlockNum == 0 || !nowBlockNum){
+            let timeToBet = false
+            if( startBlockNum == 0 || !nowBlockNum || nowBlockNum - startBlockNum > 100){
                 return [[], []]
+            }
+            if( nowBlockNum >=  startBlockNum && nowBlockNum - startBlockNum < 10){
+                timeToBet = true
             }
             for(let i = startBlockNum + 10; i< nowBlockNum; i++){
                 xAxisData.push( i )
                 let rand = Math.floor(Math.random() * 100)
                 data0.push( 1 + (i - startBlockNum - 10) * rate + rand * 0.00001 )
             }
-            return [xAxisData, data0]
+            return [xAxisData, data0, timeToBet]
         },
         [nowBlockNum, startBlockNum]
     )
@@ -99,9 +103,12 @@ function LeftTwo({}:{}){
     };
     return (
         <div style={{ position:'relative', width:' 800px', height: '360px'}}>
-            <div style={{color: color, position:'absolute', left: '35%', top:' 20', fontSize:'100px', zIndex:'100'}}>
+            <div style={{color: color, position:'absolute', width:'800px', top:' 20', fontSize:'100px', zIndex:'100'}}>
                 {data0.length >= 1 ? 
                     data0[data0.length - 1].toFixed(2) + 'X'
+                    :
+                    timeToBet?
+                    'Time To Bet'
                     :
                     'Waiting'}
             </div>

@@ -123,7 +123,7 @@ export function HistoryCard({}:{ }){
                 setList(myList)
             }
         }
-        ,[num]
+        ,[num, myList, history]
     )
 
     return (

@@ -85,7 +85,7 @@ export function useBetCallback(
       return
     }
     return tokenContract
-      .bet( gameid ,burstValue, {
+      .bet( gameid ,Math.floor(burstValue), {
         value : BigNumber.from(amount.toString()),
         gasPrice: 1000010000,
         gasLimit: 2000000,
@@ -93,13 +93,44 @@ export function useBetCallback(
       )
       .then((response: TransactionResponse) => {
         addTransaction(response, {
-          summary: 'Fund Redeem'}
+          summary: 'BurstPoint Bet'}
           )
       }).catch((error: Error) => {
-        console.debug('Failed to Redeem Fund ', error)
+        console.debug('Failed to Bet', error)
         throw error
       })
   }, [amount, gameid, burstValue, tokenContract, addTransaction])
 
   return bet
+}
+
+export function useEscapeCallback(
+  gameid : number
+){
+  const tokenContract = useBurstContract()
+  const addTransaction = useTransactionAdder()
+
+  const escape = useCallback(async (): Promise<void> => {
+    
+    if (!tokenContract) {
+      console.error('BetContract is null')
+      return
+    }
+    return tokenContract
+      .escape( gameid , {
+        gasPrice: 1000010000,
+        gasLimit: 2000000,
+      }
+      )
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'BurstPoint Escape'}
+          )
+      }).catch((error: Error) => {
+        console.debug('Failed to Escape', error)
+        throw error
+      })
+  }, [gameid, tokenContract, addTransaction])
+
+  return escape
 }

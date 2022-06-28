@@ -12,11 +12,12 @@ import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 import { Input as NumericalInput } from '../NumericalInput'
-import { useFundRedeemCallback, useFundSubscribeCallback, useBetCallback} from 'hooks/useFundCallback'
+import { useFundRedeemCallback, useFundSubscribeCallback, useBetCallback, useEscapeCallback} from 'hooks/useFundCallback'
 import { HistoryCard } from './HistoryCard'
 import LeftTwo from 'components/EChart/lineChart'
-import { useFundStatus, FundStatus } from 'data/History'
+import { useFundStatus, FundStatus} from 'data/History'
 import { useGameId} from 'data/History'
+import {useBlockNumber } from 'state/application/hooks'
 
 const CardUnit = styled.div`
     display: flex;
@@ -85,6 +86,10 @@ const DepositButton = styled(CardButton)`
     background: #6aa84f;
 `
 
+const EscapeButton = styled(CardButton)`
+    background: #FFD300;
+`
+
 const Row = styled.div`
     display: flex;
     justify-content: space-between;
@@ -130,12 +135,33 @@ export function StrategyCard(){
 }
 
 export function FundTokenCard({}:{ }){
-    const [ ma, setMa] = useState<boolean>(false)
-    const [ labelIndex, setLabelIndex ] = useState<number>(0)
-
+    enum BetStatus{
+        TimeToBet,
+        CanEscape,
+        WaitNext
+    }
     const { account , chainId } = useActiveWeb3React()
+    const nowBlock = useBlockNumber()
+    const gameid = useGameId()
     const tokenBalance = useETHBalances([account?? undefined])
-    console.log('tokenBalance', tokenBalance)
+
+
+    const gameStatus = useMemo(
+        ()=>{
+            if(!nowBlock){
+                return BetStatus.WaitNext
+            }
+            if(nowBlock - gameid >= 110 ||  nowBlock - gameid <0){
+                return BetStatus.WaitNext
+            }else if(nowBlock - gameid < 10){
+                return BetStatus.TimeToBet
+            }else{
+                return BetStatus.CanEscape
+            }
+        },[nowBlock , gameid]
+    )
+
+
 
     const userBalance = useMemo(
         ()=>{
@@ -189,9 +215,9 @@ export function FundTokenCard({}:{ }){
 
     console.log('approval',approval)
 
-    const gameid = useGameId()
+    const bet = useBetCallback(gameid, parseFloat(shareInput) * 100 , inputToken.raw)
 
-    const bet = useBetCallback(gameid, parseInt(shareInput), inputToken.raw)
+    const escape = useEscapeCallback(gameid)
 
     return(
         <>
@@ -235,21 +261,28 @@ export function FundTokenCard({}:{ }){
                                     !account?
                                     <FailButton>Connect a Wallet</FailButton>
                                     :
-                                    approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING?
-                                        <ApproveButton
-                                            onClick={approveCallback}
-                                        >Approve
-                                    </ApproveButton>
-                                    :
-                                    inputCheck?
-                                    <DepositButton
-                                        onClick={()=>{
-                                            bet()
-                                            setShareInput('0.0')
-                                        }}
+                                    gameStatus == BetStatus.TimeToBet?
+                                    (
+                                        inputCheck?
+                                        <DepositButton
+                                            onClick={()=>{
+                                                bet()
+                                                setShareInput('0.0')
+                                            }}
                                         >Bet</DepositButton>
+                                        :
+                                        <FailButton>Invalid Input</FailButton>
+                                    )
                                     :
-                                    <FailButton>Invalid Input</FailButton>
+                                    gameStatus == BetStatus.CanEscape?
+                                    <EscapeButton
+                                            onClick={()=>{
+                                                escape()
+                                            }}
+                                        >Escape</EscapeButton>
+                                    :
+                                    <FailButton>Wait Next Game</FailButton>
+                                    
                                 }
                         </div>
                     </div>
