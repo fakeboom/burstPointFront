@@ -227,7 +227,7 @@ export function FundTokenCard({}:{ }){
                         <div className="card" >
                                 <Row>
                                     <span>Bet Amount</span>
-                                    <span>Balance: {userBalance && userBalance?.toSignificant(6)} ETH</span>
+                                    <span>Balance: {userBalance && userBalance?.toSignificant(6)} ROSE</span>
                                 </Row>
                                 <InputRow>
                                     <NumericalInput

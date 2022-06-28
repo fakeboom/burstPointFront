@@ -356,7 +356,8 @@ export const FUND_PAIR: { readonly [chainId in ChainId]?: [Token, Token] } = {
 }
 
 export const FUND_ADDRESS: { [chainId in ChainId]?: string } = {
-  [ChainId.RINKEBY]: '0xa500784e2fb20278aa634feabcf1945c4ad2c6b7'
+  [ChainId.RINKEBY]: '0xa500784e2fb20278aa634feabcf1945c4ad2c6b7',
+  [ChainId.OASISETH_MAIN] : '0x35849fF49510cfE2d964a7A08cff41cB07D32A30'
 }
 
 export const CHAIN_CONFIG = {
