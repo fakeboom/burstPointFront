@@ -157,7 +157,7 @@ export function useGameRecord(): GameRcord[]{
               betAmount: new Decimal(element.amount),
               finalGuess: parseInt(element.burstvalue)/ 100,
               earnAmount: earn,
-              hash:'',
+              hash: element.endhash,
               status: status
             }
           )

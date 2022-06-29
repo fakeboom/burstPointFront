@@ -148,9 +148,9 @@ export function HistoryCard({}:{ }){
                         <CardText1 style={{flex:'2', textAlign:'right'}}>betAmount</CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right'}}>earnAmount</CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right'}}>player</CardText1>
-                        <span style={{flex:'1', textAlign:'right'}}>
-
-                        </span>
+                        <CardText1 style={{flex:'1', textAlign:'right'}}>
+                            hash
+                        </CardText1>
                     </Row>
             <div style = {{maxHeight : '300px', overflow:'scroll'}}>
             {

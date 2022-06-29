@@ -18,7 +18,7 @@ function LeftTwo({}:{}){
             if( startBlockNum == 0 || !nowBlockNum || nowBlockNum - startBlockNum > 100){
                 return [[], []]
             }
-            if( nowBlockNum >=  startBlockNum && nowBlockNum - startBlockNum < 10){
+            if( nowBlockNum >=  startBlockNum && nowBlockNum - startBlockNum <= 10){
                 timeToBet = true
             }
             for(let i = startBlockNum + 10; i< nowBlockNum; i++){
