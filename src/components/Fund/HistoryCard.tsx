@@ -174,13 +174,18 @@ export function HistoryCard({}:{ }){
                             </CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right'}}>{showAddress(item.playerAddress as string)}</CardText1>
                         <span style={{flex:'1', textAlign:'right'}}>
-                            <ClickImg 
+                            {
+                                item.hash != ''?
+                                <ClickImg 
                                 onClick={
                                     ()=>{
                                         window.open((CHAIN_CONFIG as any)[chainId ?? DefaultChainId].blockExplorerUrl + '/tx/' + item.hash)
                                     }
                                 }
                                 src={JumpImg} height={'25px'}/>
+                                :
+                                null
+                            }                          
                         </span>
                     </Row>
                     )
