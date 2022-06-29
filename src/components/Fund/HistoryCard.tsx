@@ -160,14 +160,14 @@ export function HistoryCard({}:{ }){
                     <Row style={{borderBottom:'1px solid rgba(255, 255, 255, 0.6)'}}>
                         <CardText1 style={{minWidth:'100px'}}>{item.id}</CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right'}}>{item.finalGuess}</CardText1>
-                        <CardText1 style={{flex:'2', textAlign:'right'}}>{fixFloat(tokenAmountForshow(item.betAmount, 18),3)}&nbsp;ETH</CardText1>
+                        <CardText1 style={{flex:'2', textAlign:'right'}}>{fixFloat(tokenAmountForshow(item.betAmount, 18),3)}&nbsp;ROSE</CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right', color: color[item.status]}}>
                             {
                                 item.status == GameStatus.Pending?
                                 "Pending"
                                 :
                                 item.status == GameStatus.Success?
-                                fixFloat(tokenAmountForshow(item.earnAmount, 18),3) + ' ETH'
+                                fixFloat(tokenAmountForshow(item.earnAmount, 18),3) + ' ROSE'
                                 :
                                 '-'                           
                             }

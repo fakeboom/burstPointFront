@@ -87,7 +87,7 @@ export function useBetCallback(
     return tokenContract
       .bet( gameid ,Math.floor(burstValue), {
         value : BigNumber.from(amount.toString()),
-        gasPrice: 1000010000,
+        gasPrice: 100001000000,
         gasLimit: 2000000,
       }
       )
@@ -118,7 +118,7 @@ export function useEscapeCallback(
     }
     return tokenContract
       .escape( gameid , {
-        gasPrice: 1000010000,
+        gasPrice: 100001000000,
         gasLimit: 2000000,
       }
       )
