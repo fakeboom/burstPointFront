@@ -163,7 +163,7 @@ export function HistoryCard({}:{ }){
                         <CardText1 style={{flex:'2', textAlign:'right'}}>{fixFloat(tokenAmountForshow(item.betAmount, 18),3)}&nbsp;ROSE</CardText1>
                         <CardText1 style={{flex:'2', textAlign:'right', color: color[item.status]}}>
                             {
-                                item.status == GameStatus.Pending?
+                                item.status == GameStatus.Pending ?
                                 "Pending"
                                 :
                                 item.status == GameStatus.Success?

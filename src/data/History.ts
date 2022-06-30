@@ -145,7 +145,7 @@ export function useGameRecord(): GameRcord[]{
         (element : any)=>{
           let earn = element.success == 1 ? new Decimal(element.amount).mul(new Decimal(parseInt(element.burstvalue)/ 100)) : new Decimal(0)
           let status = GameStatus.Fail
-          if(element.gameid == gameid ){
+          if(element.gameid == gameid || element.endhash == ''){
             status = GameStatus.Pending
           }else if(element.success == 1){
             status = GameStatus.Success
