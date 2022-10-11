@@ -290,6 +290,10 @@ const chains: ChainObject = {
     chainName: 'Emerald mainnet',
     builder: builders.oasismain
   },
+  [ChainId.OASISETH_SAPPHIRE]: {
+    chainName: 'oasis sapphire',
+    builder: builders.oasismain
+  }
 }
 
 export function getExplorerLink(

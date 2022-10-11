@@ -6,7 +6,8 @@
   "dependencies": {
     "@ethersproject/experimental": "^5.0.1",
     "@liuxingfeiyu/zoo-core": "1.0.12",
-    "@liuxingfeiyu/zoo-sdk": "1.0.77",
+    "@liuxingfeiyu/zoo-sdk": "1.0.80",
+    "@oasisprotocol/sapphire-paratime": "^1.0.7",
     "@popperjs/core": "^2.4.4",
     "@reach/portal": "^0.10.3",
     "@reduxjs/toolkit": "^1.3.5",
@@ -37,6 +38,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "decimal.js": "^10.2.1",
     "echarts": "^4.9.0",
+    "https-browserify": "^1.0.0",
     "polished": "^3.3.2",
     "react": "^18.0.0",
     "react-confetti": "^6.0.0",

@@ -101,6 +101,7 @@ const WRAPPED_NATIVE_ONLY: ChainTokenList = {
   [ChainId.HECO_TESTNET]: [WETH[ChainId.HECO_TESTNET]],
   [ChainId.OASISETH_MAIN]: [WETH[ChainId.OASISETH_MAIN]],
   [ChainId.OASISETH_TEST]: [WETH[ChainId.OASISETH_TEST]],
+  [ChainId.OASISETH_SAPPHIRE]: [WETH[ChainId.OASISETH_SAPPHIRE]]
 }
 
 // Default Ethereum chain tokens
@@ -333,7 +334,7 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 //process.env.REACT_APP_DEFAULTCHAINID
 
-export const DefaultChainId : ChainId = (<any>ChainId)[process.env.REACT_APP_DEFAULTCHAINID || 'OASISETH_MAIN']
+export const DefaultChainId : ChainId = (<any>ChainId)[process.env.REACT_APP_DEFAULTCHAINID || 'OASISETH_SAPPHIRE']
 
 export const APIHost = process.env.REACT_APP_APIHOST
 
@@ -359,6 +360,8 @@ export const FUND_ADDRESS: { [chainId in ChainId]?: string } = {
   [ChainId.RINKEBY]: '0xa500784e2fb20278aa634feabcf1945c4ad2c6b7',
   [ChainId.OASISETH_MAIN] : '0x35849fF49510cfE2d964a7A08cff41cB07D32A30'
 }
+
+export const BurstPointContractAddress = '0xa39D253592474485d55371FBA17B638C9a382D27' 
 
 export const CHAIN_CONFIG = {
   [ChainId.OASISETH_TEST]: {

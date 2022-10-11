@@ -34,7 +34,8 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.HECO]: 'HECO',
   [ChainId.HECO_TESTNET]: 'HECO Testnet',
   [ChainId.OASISETH_TEST]: 'Emerald Testnet',
-  [ChainId.OASISETH_MAIN]: 'Emerald mainnet'
+  [ChainId.OASISETH_MAIN]: 'Emerald mainnet',
+  [ChainId.OASISETH_SAPPHIRE]: 'sapphire'
 }
 
 export default function Web3Status() {

@@ -24,8 +24,8 @@ export const RPC = {
   [ChainId.HECO]: 'https://http-mainnet.hecochain.com',
   [ChainId.HECO_TESTNET]: 'https://http-testnet.hecochain.com',
   [ChainId.OASISETH_TEST]: 'https://testnet.emerald.oasis.dev',
-  [ChainId.OASISETH_MAIN]: 'https://emerald.oasis.dev'
-
+  [ChainId.OASISETH_MAIN]: 'https://emerald.oasis.dev',
+  [ChainId.OASISETH_SAPPHIRE]: 'https://testnet.sapphire.oasis.dev'
 }
 
 export const network = new NetworkConnector({
@@ -60,6 +60,7 @@ export const injected = new InjectedConnector({
     128, // heco
     42261,//oasis test
     42262,//oasis main
-    256 // heco testnet
+    256, // heco testnet
+    23295,
   ]
 })
