@@ -26,7 +26,7 @@ export function useETHBalances(
   
   const nativeToken = Currency.getNativeCurrency(DefaultChainId)
   const results = useSingleContractMultipleData(
-    multicallContract,
+    null,
     'getEthBalance',
     addresses.map(address => [address])
   )

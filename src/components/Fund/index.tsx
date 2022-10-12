@@ -12,12 +12,13 @@ import { FUND_ADDRESS , DefaultChainId, CHAIN_CONFIG} from '../../constants'
 import Decimal from 'decimal.js'
 import fixFloat, { fixFloatFloor, tokenAmountForshow, transToThousandth } from 'utils/fixFloat'
 import { Input as NumericalInput } from '../NumericalInput'
-import { useFundRedeemCallback, useFundSubscribeCallback, useBetCallback, useEscapeCallback} from 'hooks/useFundCallback'
+import { useBetCallback, useEscapeCallback} from 'hooks/useFundCallback'
 import { HistoryCard } from './HistoryCard'
 import LeftTwo from 'components/EChart/lineChart'
 import { useFundStatus, FundStatus} from 'data/History'
 import { useGameId} from 'data/History'
 import {useBlockNumber } from 'state/application/hooks'
+import Web3 from 'web3';
 
 const CardUnit = styled.div`
     display: flex;
@@ -143,7 +144,26 @@ export function FundTokenCard({}:{ }){
     const { account , chainId } = useActiveWeb3React()
     const nowBlock = useBlockNumber()
     const gameid = useGameId()
-    const tokenBalance = useETHBalances([account?? undefined])
+    //const tokenBalance = useETHBalances([account?? undefined])
+
+    const [tokenBalance, setTokenBalance] = useState<CurrencyAmount>(CurrencyAmount.ether('0'))
+    useEffect(
+        ()=>{
+            const web3 = new Web3(window.ethereum as any)
+            if(account){
+                web3.eth.getBalance(account as string).then(
+                    (result)=>{
+                        let nativeToken = Currency.getNativeCurrency(DefaultChainId)
+                        setTokenBalance(
+                            new CurrencyAmount(nativeToken, JSBI.BigInt(result.toString()))
+                        )
+                    }
+                )
+            }
+            
+        },
+        [account, nowBlock]
+    )
 
 
     const gameStatus = useMemo(
@@ -166,7 +186,7 @@ export function FundTokenCard({}:{ }){
     const userBalance = useMemo(
         ()=>{
             if(tokenBalance && account){
-                return tokenBalance[account]
+                return tokenBalance
             }
             let nativeToken = Currency.getNativeCurrency(DefaultChainId)
             return new CurrencyAmount(nativeToken, '0')

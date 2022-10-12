@@ -7,11 +7,13 @@ import { useTranslation } from 'react-i18next'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import ReactGA from 'react-ga'
 import {injected, network} from '../../connectors'
-import {SUPPORTED_WALLETS} from '../../constants'
+import {BurstPointContractAddress, SUPPORTED_WALLETS} from '../../constants'
 import {showAddress} from '../../utils/fixFloat'
 import { ChainId, TokenAmount, Currency } from '@liuxingfeiyu/zoo-sdk'
 import { useActiveWeb3React, useEagerConnect } from '../../hooks'
-
+import Web3 from 'web3';
+import * as sapphire from '@oasisprotocol/sapphire-paratime';
+import  BURST_ABI from '../../constants/abis/BurstPoint.json'
 
 const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.MAINNET]: 'Ethereum',
@@ -71,6 +73,27 @@ export default function Web3Status() {
     }
   }
   const { account, chainId } = useActiveWeb3React()
+
+  function testFunc(){
+    if(window.ethereum){
+      const web3 = new Web3(window.ethereum as any)
+      web3.setProvider(sapphire.wrap(web3.currentProvider as any) as any);
+      const contract = new web3.eth.Contract(BURST_ABI.abi as any, BurstPointContractAddress);
+      contract.methods.beginGame(1).send(
+        {
+          from: account as string,
+          gasLimit: 3000000
+        }
+      )
+      // web3.eth.sendTransaction(
+      //   {
+      //     from: account as string,
+      //     to: account as string,
+      //     value: 1000
+      //   }
+      // )
+    }
+  }
 
   return (
     <>

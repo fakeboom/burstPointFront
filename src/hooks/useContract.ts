@@ -12,6 +12,8 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from '../constants/v1'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
+import Web3 from 'web3';
+import * as sapphire from '@oasisprotocol/sapphire-paratime';
 
 
 // returns null on errors
@@ -58,9 +60,11 @@ export function useTokenWrapper(address?: string, withSignerIfPossible?: boolean
   return useContract(address, TokenWrapper_ABI.abi , withSignerIfPossible)
 }
 
-export function useBurstContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
-  return useContract(BurstPointContractAddress, BURST_ABI.abi , withSignerIfPossible)
+export function useBurstContract() {
+  const web3 = new Web3(window.ethereum as any)
+  web3.setProvider(sapphire.wrap(web3.currentProvider as any) as any);
+  const contract = new web3.eth.Contract(BURST_ABI.abi as any, BurstPointContractAddress);
+  return contract
 }
 
 export function useMulticallContract(): Contract | null {

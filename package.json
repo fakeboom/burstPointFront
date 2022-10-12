@@ -38,6 +38,7 @@
     "@web3-react/injected-connector": "^6.0.7",
     "decimal.js": "^10.2.1",
     "echarts": "^4.9.0",
+    "ethers": "^5.7.1",
     "https-browserify": "^1.0.0",
     "polished": "^3.3.2",
     "react": "^18.0.0",
@@ -51,7 +52,7 @@
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "4.0.3",
     "react-spring": "^8.0.27",
     "react-use-gesture": "^6.0.14",
     "react-virtualized-auto-sizer": "^1.0.2",
@@ -60,7 +61,8 @@
     "redux-localstorage-simple": "^2.3.1",
     "styled-components": "^4.2.0",
     "typescript": "^4.6.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3": "^1.8.0"
   },
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false  react-scripts start",

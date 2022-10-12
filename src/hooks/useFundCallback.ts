@@ -11,63 +11,6 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { PayableOverrides }  from '@ethersproject/contracts'
 
-export function useFundSubscribeCallback(
-  address : string,
-  amount : JSBI,
-){
-  const tokenContract = useBurstContract()
-  const addTransaction = useTransactionAdder()
-
-  const subscribe = useCallback(async (): Promise<void> => {
-    
-    if (!tokenContract) {
-      console.error('FundContract is null')
-      return
-    }
-    return tokenContract
-      .subscribe(  address  ,BigNumber.from(amount.toString())
-      )
-      .then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Fund Subscribe'}
-          )
-      }).catch((error: Error) => {
-        console.debug('Failed to Subscribe Fund ', error)
-        throw error
-      })
-  }, [amount, address, tokenContract, addTransaction])
-
-  return subscribe
-}
-
-export function useFundRedeemCallback(
-  address : string,
-  amount : JSBI,
-){
-  const tokenContract = useBurstContract()
-  const addTransaction = useTransactionAdder()
-
-  const redeem = useCallback(async (): Promise<void> => {
-    
-    if (!tokenContract) {
-      console.error('FundContract is null')
-      return
-    }
-    return tokenContract
-      .redeem(  address  ,BigNumber.from(amount.toString())
-      )
-      .then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Fund Redeem'}
-          )
-      }).catch((error: Error) => {
-        console.debug('Failed to Redeem Fund ', error)
-        throw error
-      })
-  }, [amount, address, tokenContract, addTransaction])
-
-  return redeem
-}
 
 
 export function useBetCallback(
@@ -77,6 +20,7 @@ export function useBetCallback(
 ){
   const tokenContract = useBurstContract()
   const addTransaction = useTransactionAdder()
+  const { account, chainId }  = useActiveWeb3React()
 
   const bet = useCallback(async (): Promise<void> => {
     
@@ -85,10 +29,11 @@ export function useBetCallback(
       return
     }
     return tokenContract
-      .bet( gameid ,Math.floor(burstValue), {
+      .methods.bet( gameid ,Math.floor(burstValue)).
+      send({
         value : BigNumber.from(amount.toString()),
-        gasPrice: 100001000000,
-        gasLimit: 2000000,
+        gasLimit: 3000000,
+        from: account as string,
       }
       )
       .then((response: TransactionResponse) => {
@@ -99,7 +44,7 @@ export function useBetCallback(
         console.debug('Failed to Bet', error)
         throw error
       })
-  }, [amount, gameid, burstValue, tokenContract, addTransaction])
+  }, [amount, gameid, burstValue, tokenContract, addTransaction, account])
 
   return bet
 }
@@ -109,6 +54,7 @@ export function useEscapeCallback(
 ){
   const tokenContract = useBurstContract()
   const addTransaction = useTransactionAdder()
+  const { account, chainId }  = useActiveWeb3React()
 
   const escape = useCallback(async (): Promise<void> => {
     
@@ -117,9 +63,9 @@ export function useEscapeCallback(
       return
     }
     return tokenContract
-      .escape( gameid , {
-        gasPrice: 100001000000,
-        gasLimit: 2000000,
+      .methods.escape( gameid).send({
+        from: account as string,
+        gasLimit: 3000000
       }
       )
       .then((response: TransactionResponse) => {
@@ -130,7 +76,7 @@ export function useEscapeCallback(
         console.debug('Failed to Escape', error)
         throw error
       })
-  }, [gameid, tokenContract, addTransaction])
+  }, [gameid, tokenContract, addTransaction, account])
 
   return escape
 }
