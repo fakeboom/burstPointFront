@@ -373,5 +373,10 @@ export const CHAIN_CONFIG = {
     chainId: '0xa516',
     rpcUrl: RPC[ChainId.OASISETH_MAIN],
     blockExplorerUrl: 'https://explorer.emerald.oasis.dev/',
+  },
+  [ChainId.OASISETH_SAPPHIRE]: {
+    chainId: '0x5aff',
+    rpcUrl: RPC[ChainId.OASISETH_SAPPHIRE],
+    blockExplorerUrl: 'https://testnet.explorer.sapphire.oasis.dev'
   }
 }
